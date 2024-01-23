@@ -1,0 +1,21 @@
+ - Comparison between DataParallel and DistributedDataParallel
+
+Data-Parallel
+torch.nn.DataParallel(module, device_ids=None, output_device=None, dim=0)
+
+First, DataParallel is single-process, multi-thread, and only works on a single machine,
+while DistributedDataParallel is multi-process and works for both single- and multi- machine training.
+DataParallel is usually slower than DistributedDataParallel even on a single machine due to GIL contention across threads,
+per-iteration replicated model, and additional overhead introduced by scattering inputs and gathering outputs.
+
+
+
+Questions: What is the use pin_memory=True in dataloader
+
+- usually you should use it.
+
+If you load your samples in the Dataset on CPU and would like to push it during training to the GPU,
+you can speed up the host to device transfer by enabling pin_memory.This lets your DataLoader allocate the samples
+in page-locked memory, which speeds-up the transfer.
+
+# https://github.com/pytorch/pytorch/issues/25010
